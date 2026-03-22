@@ -33,7 +33,6 @@
       line-height: 1.85;
     }
 
-    /* Top bar */
     .topbar {
       background: var(--ink);
       color: #c9b99a;
@@ -77,7 +76,6 @@
       text-transform: uppercase;
     }
 
-    /* Hero */
     .hero {
       background: var(--surface);
       padding: 4rem 0 3rem;
@@ -169,7 +167,6 @@
       color: var(--text-faint);
     }
 
-    /* Reading progress bar */
     .progress-bar {
       position: fixed;
       top: 0;
@@ -181,7 +178,6 @@
       transition: width 0.1s linear;
     }
 
-    /* Article */
     article {
       padding: 3.5rem 0 5rem;
       animation: fadeIn 0.6s 0.1s ease both;
@@ -199,15 +195,13 @@
     }
 
     article h3 {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'DM Mono', monospace;
       font-weight: 500;
-      font-size: 1rem;
+      font-size: 0.8rem;
       color: var(--accent);
       margin: 2rem 0 0.6rem;
-      font-family: 'DM Mono', monospace;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      font-size: 0.8rem;
     }
 
     article p {
@@ -227,7 +221,6 @@
       margin: 2.5rem 0;
     }
 
-    /* Callout */
     .callout {
       background: var(--accent-light);
       border-left: 3px solid var(--accent);
@@ -247,7 +240,6 @@
       display: block;
     }
 
-    /* Info box */
     .infobox {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -266,7 +258,6 @@
       display: block;
     }
 
-    /* Steps */
     .steps {
       list-style: none;
       margin: 1.5rem 0;
@@ -309,7 +300,6 @@
       color: var(--text-muted);
     }
 
-    /* Formula box */
     .formula {
       background: var(--code-bg);
       border: 1px solid var(--border);
@@ -323,7 +313,6 @@
       line-height: 1.8;
     }
 
-    /* Stats row */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -353,7 +342,6 @@
       line-height: 1.4;
     }
 
-    /* Results table */
     .results-table {
       width: 100%;
       border-collapse: collapse;
@@ -393,7 +381,6 @@
       background: var(--tag-bg);
     }
 
-    /* Pro / Con */
     .pro-con {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -435,7 +422,6 @@
     .pro-con-box.pros li::before { content: '+'; position: absolute; left: 0; color: #27ae60; font-weight: 700; }
     .pro-con-box.cons li::before { content: '−'; position: absolute; left: 0; color: #c0392b; font-weight: 700; }
 
-    /* Attention diagram (pure CSS) */
     .attention-demo {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -459,7 +445,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0;
       flex-wrap: wrap;
       gap: 0.5rem;
     }
@@ -488,7 +473,6 @@
       flex-shrink: 0;
     }
 
-    /* Footer */
     footer {
       background: var(--ink);
       color: #8a7d6e;
@@ -551,7 +535,7 @@
       <div class="avatar">ML</div>
       <div class="byline-info">
         <strong>Machine Learning for Remote Sensing — II</strong>
-        <span>Spring 2025 · Group Blog Assignment · IITB</span>
+        <span>Spring 2025-2 · Group Blog Assignment · IIT Bombay</span>
       </div>
     </div>
   </div>
@@ -560,15 +544,15 @@
 <div class="container">
 <article>
 
-  <!-- INTRO -->
+  <h2>Introduction</h2>
+
   <p>
-    When you look at a photo and describe it, your eyes don't scan the entire image at once. You glance at a face, a dog, a sign — your attention shifts naturally as you form each word. This is so intuitive for humans that we rarely think about it. But for a machine trying to describe an image? It's a deceptively hard problem.
+    When you look at a photo and describe it, your eyes don't scan the entire image at once. You glance at a face, a dog, a sign — your attention shifts naturally as you form each word. This is so intuitive for humans that we rarely think about it. But for a machine trying to describe an image, it is a deceptively hard problem.
   </p>
   <p>
-    In 2015, Xu et al. published <strong>Show, Attend and Tell</strong> at ICML — a paper that didn't just improve image captioning scores, but fundamentally changed <em>how</em> we think about the task. By introducing a visual attention mechanism into the encoder-decoder framework, they enabled a model to dynamically focus on relevant regions of an image as it generates each word of a caption.
+    In 2015, Xu et al. published <strong>Show, Attend and Tell</strong> at ICML — a paper that didn't just improve image captioning scores, but fundamentally changed <em>how</em> we think about the task. By introducing a visual attention mechanism into the encoder-decoder framework, the model dynamically focuses on relevant spatial regions of an image as it generates each word of a caption, rather than working from a single compressed representation.
   </p>
 
-  <!-- PROBLEM -->
   <h2>The Problem</h2>
 
   <p>
@@ -577,24 +561,23 @@
 
   <div class="callout">
     <span class="callout-label">Core Limitation</span>
-    Compressing an entire image into a single vector creates an information bottleneck. The decoder must generate a full sentence from one static representation — with no way to dynamically "look back" at different parts of the image as it generates each word.
+    Compressing an entire image into a single vector creates an information bottleneck. The decoder must generate a full sentence from one static representation — with no mechanism to dynamically revisit different parts of the image as it generates each word.
   </div>
 
   <p>
-    This is particularly problematic for complex scenes. If a caption needs to describe both a frisbee and the person throwing it, a single global vector may capture the gist of the scene but fail to preserve fine-grained spatial detail needed for accurate word-by-word generation.
+    This is particularly problematic for complex scenes. If a caption needs to describe both a frisbee and the person throwing it, a single global vector may capture the gist of the scene but fail to preserve the fine-grained spatial detail needed for accurate word-by-word generation. Prior work using fully-connected top-layer CNN features discards the spatial structure of the image entirely.
   </p>
 
   <h3>Why This Matters</h3>
 
   <p>
-    Automatic image captioning has significant real-world relevance — from accessibility tools for the visually impaired, to automatic metadata generation for image databases, to scene understanding in robotics and remote sensing. In the context of remote sensing specifically, where images are densely packed with spatially distinct objects (buildings, roads, vegetation, water bodies), the ability to locally attend to different regions is especially valuable. A model that can attend to "the river in the lower-left region" separately from "the forested area on the right" is far more useful than one working from a blurry global average.
+    Automatic image captioning has significant real-world relevance — from accessibility tools for the visually impaired, to automatic metadata generation for image databases, to scene understanding in robotics and autonomous systems. In the context of remote sensing specifically, where images are densely packed with spatially distinct objects (buildings, roads, vegetation, water bodies), the ability to locally attend to different regions is especially valuable. A model that can attend to a riverbed separately from a forested hillside is far more capable than one working from a blurry global average.
   </p>
 
-  <!-- APPROACH -->
   <h2>The Approach</h2>
 
   <p>
-    The paper (Xu et al., ICML 2015) proposes replacing the single-vector image encoding with a set of spatial feature vectors, and introducing an attention mechanism that weights these vectors differently at each decoding step.
+    Xu et al. propose replacing the single-vector image encoding with a set of spatial feature vectors, and introducing an attention mechanism that weights these vectors differently at each decoding step. The key insight is that lower convolutional layers preserve spatial structure, enabling the decoder to selectively focus on different image regions as it generates each word.
   </p>
 
   <div class="attention-demo">
@@ -615,39 +598,39 @@
   <ol class="steps">
     <li>
       <strong>CNN Encoder — Spatial Features</strong>
-      <span>Instead of using the final fully-connected layer of a CNN, the model extracts features from a lower convolutional layer (specifically the 14×14×512 feature map from Oxford VGGNet). This produces L = 196 annotation vectors, each representing a spatial region of the image rather than a single global descriptor.</span>
+      <span>Instead of using the final fully-connected layer of a CNN, the model extracts features from a lower convolutional layer — specifically the 14×14×512 feature map from Oxford VGGNet (Simonyan &amp; Zisserman, 2014), pre-trained on ImageNet. This produces L = 196 annotation vectors, each representing a distinct spatial region of the image, preserving spatial structure that the top-layer pooled representations discard.</span>
     </li>
     <li>
       <strong>Attention Mechanism — Where to Look</strong>
-      <span>At each decoding timestep t, a small MLP (the attention model f_att) takes the previous LSTM hidden state h_{t-1} and each annotation vector a_i to produce energy scores e_{ti}. These are normalized via softmax into attention weights α_{ti} — a probability distribution over all 196 locations indicating which regions are most relevant for generating the next word.</span>
+      <span>At each decoding timestep t, a small multilayer perceptron (the attention model f<sub>att</sub>) takes the previous LSTM hidden state h<sub>t−1</sub> and each annotation vector a<sub>i</sub> to produce energy scores e<sub>ti</sub>. These are normalized via softmax into attention weights α<sub>ti</sub> — a probability distribution over all 196 spatial locations, indicating which regions are most relevant for generating the next word.</span>
     </li>
     <li>
       <strong>Context Vector — What the Model Sees</strong>
-      <span>The attention weights are used to compute a context vector ẑ_t — a weighted combination of the annotation vectors. This dynamic, location-aware context vector is then fed into the LSTM alongside the previous word embedding to generate the next word.</span>
+      <span>The attention weights are used to compute a context vector ẑ<sub>t</sub> — either a weighted sum (soft attention) or a sampled single-location representation (hard attention) of the annotation vectors. This dynamic, location-aware context vector is fed into the LSTM alongside the previous word embedding to condition next-word generation.</span>
     </li>
     <li>
       <strong>LSTM Decoder — Word by Word</strong>
-      <span>A standard LSTM generates one word per timestep, conditioned on the context vector ẑ_t, the previous hidden state h_{t-1}, and the embedding of the previously generated word. The initial LSTM state is computed from the mean of all annotation vectors through learned MLPs.</span>
+      <span>A standard LSTM generates one word per timestep, conditioned on the context vector ẑ<sub>t</sub>, the previous hidden state h<sub>t−1</sub>, and the embedding of the previously generated word. The initial LSTM memory and hidden states are computed from the mean of all annotation vectors through two separate learned MLPs.</span>
     </li>
   </ol>
 
   <h3>Soft vs Hard Attention</h3>
 
   <p>
-    The paper proposes two variants of the attention mechanism, which is one of its most intellectually interesting contributions:
+    One of the paper's most intellectually interesting contributions is the proposal of two theoretically distinct attention variants:
   </p>
 
   <div class="infobox">
     <span class="infobox-label">Soft Attention (Deterministic)</span>
     <p style="margin:0; font-size:0.92rem; color:var(--text-muted);">
-      Takes the expectation of the context vector — a weighted average over all regions. Fully differentiable, trained end-to-end with standard backpropagation. Also introduces <em>doubly stochastic regularization</em>: a penalty that encourages the model to attend to every part of the image at least once across the full caption, improving coverage and detail.
+      Computes the context vector as a weighted average over all annotation vectors — i.e., the expectation E<sub>p(s<sub>t</sub>|a)</sub>[ẑ<sub>t</sub>]. Fully differentiable, trained end-to-end with standard backpropagation. Also introduces <em>doubly stochastic regularization</em>: a penalty term added to the loss that encourages the model to attend to every part of the image at least once across the full caption (∑<sub>t</sub> α<sub>ti</sub> ≈ 1 for each location i), improving both coverage and descriptive detail.
     </p>
   </div>
 
   <div class="infobox">
     <span class="infobox-label">Hard Attention (Stochastic)</span>
     <p style="margin:0; font-size:0.92rem; color:var(--text-muted);">
-      Samples a single attention location at each timestep from a multinoulli distribution over the attention weights. Not differentiable — trained using the REINFORCE algorithm (Williams, 1992), a policy gradient method from reinforcement learning. Harder to train but achieves slightly better quantitative performance.
+      Samples a single attention location at each timestep from a multinoulli distribution parameterized by the attention weights α. Because this sampling operation is not differentiable, the model is trained using the REINFORCE algorithm (Williams, 1992) — a policy gradient method from reinforcement learning — by maximizing a variational lower bound on the log-likelihood. Harder to train due to high gradient variance, but achieves slightly better BLEU scores on most benchmarks.
     </p>
   </div>
 
@@ -663,21 +646,28 @@ where:  α_{ti} = exp(e_{ti}) / Σ_k exp(e_{tk})
 and:    e_{ti} = f_att(a_i, h_{t-1})
   </div>
 
-  <!-- RESULTS -->
+  <p>
+    The soft attention model is trained by minimizing a penalized negative log-likelihood that incorporates the doubly stochastic regularization term:
+  </p>
+
+  <div class="formula">
+L_d = −log p(y | a)  +  λ · Σ_i (1 − Σ_t α_{ti})²
+  </div>
+
   <h2>Results</h2>
 
   <p>
-    The experimental results demonstrate significant improvements across all evaluation metrics. The model is evaluated on three benchmark datasets — Flickr8k, Flickr30k, and MS COCO — using BLEU (1–4) and METEOR scores.
+    The model is evaluated on three benchmark datasets — Flickr8k, Flickr30k, and MS COCO — using BLEU-1 through BLEU-4 and METEOR scores. Results are reported for a single model (no ensembling), using Oxford VGGNet features.
   </p>
 
   <div class="stats-row">
     <div class="stat-box">
       <div class="stat-number">25.0</div>
-      <div class="stat-label">BLEU-4 on MS COCO<br/>(Hard Attention)</div>
+      <div class="stat-label">BLEU-4 on MS COCO<br/>(Hard Attention — best BLEU)</div>
     </div>
     <div class="stat-box">
       <div class="stat-number">23.90</div>
-      <div class="stat-label">METEOR on MS COCO<br/>(Soft Attention, best overall)</div>
+      <div class="stat-label">METEOR on MS COCO<br/>(Soft Attention — best METEOR)</div>
     </div>
     <div class="stat-box">
       <div class="stat-number">21.3</div>
@@ -686,7 +676,7 @@ and:    e_{ti} = f_att(a_i, h_{t-1})
   </div>
 
   <p>
-    On Flickr8k, Hard-Attention achieves a BLEU-4 of 21.3 compared to 17.7 for the Log Bilinear baseline — a substantial improvement. On MS COCO, Soft-Attention achieves a METEOR score of 23.90, significantly outperforming all baselines including Google NIC (20.71).
+    On Flickr8k, the Hard Attention variant achieves a BLEU-4 of 21.3 compared to 17.7 for the Log Bilinear baseline — a substantial improvement. On MS COCO, Soft Attention achieves a METEOR score of 23.90, significantly outperforming all baselines including Google NIC (20.71). The two variants offer a complementary trade-off: Hard Attention leads on BLEU-4, while Soft Attention achieves the best METEOR on MS COCO.
   </p>
 
   <table class="results-table">
@@ -700,25 +690,25 @@ and:    e_{ti} = f_att(a_i, h_{t-1})
     </thead>
     <tbody>
       <tr>
-        <td>Google NIC (Vinyals et al.)</td>
+        <td>Google NIC (Vinyals et al., 2014)</td>
         <td>66.6</td>
         <td>24.6</td>
         <td>20.71</td>
       </tr>
       <tr>
-        <td>Log Bilinear (Kiros et al.)</td>
+        <td>Log Bilinear (Kiros et al., 2014)</td>
         <td>70.8</td>
         <td>24.3</td>
         <td>20.03</td>
       </tr>
       <tr class="winner">
-        <td>Soft-Attention </td>
+        <td>Soft Attention (Xu et al., 2015)</td>
         <td>70.7</td>
         <td>24.3</td>
         <td>23.90 ↑</td>
       </tr>
       <tr class="winner">
-        <td>Hard-Attention </td>
+        <td>Hard Attention (Xu et al., 2015)</td>
         <td>71.8</td>
         <td>25.0 ↑</td>
         <td>23.04</td>
@@ -727,33 +717,34 @@ and:    e_{ti} = f_att(a_i, h_{t-1})
   </table>
 
   <p>
-    Beyond the numbers, the paper's qualitative visualizations are genuinely compelling. By upsampling the attention weights and overlaying them on the original image, one can see exactly what region the model focused on when generating each word — "bird" highlights the bird, "water" highlights the lake, "frisbee" highlights the frisbee. This level of interpretability was rare in deep learning models at the time.
+    Beyond quantitative metrics, the paper's attention visualizations are genuinely compelling. By upsampling the 14×14 attention weight maps (by a factor of 2<sup>4</sup> = 16) and applying a Gaussian filter, the model's focus can be overlaid on the original image. Generating the word "bird" shifts attention to the bird; "water" shifts it to the lake. This level of spatial interpretability was rare in deep learning models at the time of publication. Crucially, the attention can go beyond object-level focus — it can attend to relationships and abstract spatial regions, which rule-based and detection-based captioning systems could not.
   </p>
 
-  <!-- CRITICAL ANALYSIS -->
   <h2>Critical Analysis</h2>
 
   <div class="pro-con">
     <div class="pro-con-box pros">
       <h4>Strengths</h4>
       <ul>
-        <li>Elegant, principled extension of the encoder-decoder framework</li>
-        <li>Attention maps provide genuine model interpretability</li>
-        <li>Two theoretically distinct attention variants, well motivated</li>
-        <li>Doubly stochastic regularization is a practically effective trick</li>
-        <li>State-of-the-art on all three benchmarks at publication time</li>
-        <li>Highly influential — cited over 10,000 times, foundational to Transformers</li>
+        <li>Principled extension of the encoder-decoder framework with clear motivation</li>
+        <li>Attention maps provide genuine, interpretable spatial alignment</li>
+        <li>Two theoretically distinct attention variants, both well-motivated</li>
+        <li>Doubly stochastic regularization improves coverage in a simple, effective way</li>
+        <li>State-of-the-art across all three benchmarks at the time of publication</li>
+        <li>Highly reproducible — public code released at <a href="https://github.com/kelvinxu/arctic-captions" target="_blank">github.com/kelvinxu/arctic-captions</a></li>
+        <li>Cited over 20,000 times; a foundational precursor to the Transformer cross-attention mechanism</li>
       </ul>
     </div>
     <div class="pro-con-box cons">
       <h4>Limitations</h4>
       <ul>
-        <li>Hard attention requires REINFORCE — high variance, slow to train</li>
-        <li>Uses fixed VGGNet encoder; no end-to-end fine-tuning of encoder</li>
-        <li>Attention is over a coarse 14×14 grid — limited spatial resolution</li>
-        <li>BLEU metric is known to correlate poorly with human judgment</li>
-        <li>No cross-modal attention — text and image streams interact only through the hidden state</li>
-        <li>Sequential LSTM decoding is slow and not parallelizable</li>
+        <li>Hard attention requires REINFORCE — high variance gradients, slow and unstable training</li>
+        <li>VGGNet encoder is kept frozen; no joint fine-tuning with the captioning objective</li>
+        <li>Attention operates on a coarse 14×14 spatial grid (196 locations), which can miss small objects</li>
+        <li>BLEU correlates poorly with human judgment of caption quality</li>
+        <li>No cross-modal attention: vision and language interact only via the LSTM hidden state</li>
+        <li>Sequential LSTM decoding is inherently slow and not parallelizable at inference or training time</li>
+        <li>Vocabulary is capped at 10,000 words, limiting the expressiveness of generated captions</li>
       </ul>
     </div>
   </div>
@@ -761,39 +752,44 @@ and:    e_{ti} = f_att(a_i, h_{t-1})
   <h3>Improvement Suggestions</h3>
 
   <p>
-    <strong>End-to-end encoder fine-tuning.</strong> The VGGNet encoder is kept frozen during training. Fine-tuning the encoder jointly with the attention-decoder on the captioning objective would allow the visual features to be task-specific, likely improving both coverage and accuracy — a direction later explored successfully by follow-up work.
+    <strong>End-to-end encoder fine-tuning.</strong> The VGGNet encoder is kept frozen throughout training. Jointly fine-tuning the CNN encoder with the attention-decoder on the captioning objective would allow the visual features to become task-specific — a direction demonstrated successfully by subsequent work. With sufficient regularization (e.g., dropout, lower learning rates for the CNN), this should improve both alignment quality and BLEU/METEOR scores.
   </p>
 
   <p>
-    <strong>Higher-resolution attention.</strong> The 14×14 spatial grid gives 196 possible attention locations, which is relatively coarse. Using features from later, higher-resolution layers or applying attention at multiple scales (as in feature pyramid networks) would allow more precise localization, particularly for small objects.
+    <strong>Higher-resolution attention.</strong> The 14×14 spatial grid provides 196 candidate attention locations, which is relatively coarse for images containing small or densely-packed objects. Using features from earlier, higher-resolution layers or applying multi-scale attention (as in Feature Pyramid Networks) would enable finer-grained localization.
   </p>
 
   <p>
-    <strong>Replacing LSTM with Transformer decoder.</strong> The sequential nature of LSTM decoding is a fundamental bottleneck. A Transformer-based decoder with self-attention and multi-head cross-attention would be both faster and more expressive — indeed, this is exactly what modern captioning models do. The attention mechanism introduced in this paper is a direct predecessor to the cross-attention mechanism in the Transformer architecture.
+    <strong>Replacing the LSTM decoder with a Transformer.</strong> The sequential nature of LSTM decoding is a fundamental bottleneck — both for training speed and model expressiveness. A Transformer-based decoder with self-attention and multi-head cross-attention over the spatial feature map would be faster, more parallelizable, and better at capturing long-range dependencies within the caption. The attention mechanism introduced in this paper is, in fact, a direct predecessor to Transformer cross-attention.
   </p>
 
   <p>
-    <strong>Better evaluation metrics.</strong> Relying on BLEU-4 and METEOR alone is insufficient — both are known to have weak correlation with human judgments of caption quality. More recent metrics like CIDEr, SPICE, or CLIPScore provide better signal and should be co-reported for fair comparison.
+    <strong>Richer evaluation metrics.</strong> Relying on BLEU-4 and METEOR alone is insufficient. Both are known to correlate weakly with human judgments of caption quality for complex scenes. Later metrics such as CIDEr (which rewards consensus across reference captions), SPICE (which evaluates semantic propositions), and CLIPScore (which uses vision-language model embeddings) provide stronger signal and should be co-reported for thorough evaluation.
   </p>
 
-  <!-- CONCLUSION -->
+  <p>
+    <strong>Learnable attention architecture.</strong> The attention model f<sub>att</sub> is a small, fixed MLP. Modern variants such as scaled dot-product attention, multi-head attention, or cross-attention with learned key/query/value projections are more expressive and efficient, and may produce better-calibrated alignment weights.
+  </p>
+
   <h2>Conclusion</h2>
 
   <p>
-    Show, Attend and Tell is one of those rare papers that is both practically impactful and intellectually illuminating. It introduced a simple but powerful idea — let the model decide where to look — and demonstrated that this yields better captions <em>and</em> more interpretable models simultaneously.
+    Show, Attend and Tell is one of those rare papers that is both practically impactful and intellectually illuminating. It introduced a simple but powerful idea — letting the model decide where to look — and demonstrated that this yields better captions <em>and</em> more interpretable models simultaneously.
   </p>
   <p>
     The paper's core contribution, soft attention over spatial feature maps, became a cornerstone of multimodal deep learning and directly influenced the design of the Transformer's cross-attention mechanism. A decade later, it remains essential reading for anyone working at the intersection of vision and language.
   </p>
   <p>
-    The authors provide a public GitHub repository enabling full reproducibility, making this paper also suitable for hands-on experimentation.
+    The publicly released codebase makes this paper well-suited to hands-on experimentation, and the modularity of the encoder-attention-decoder framework means its ideas transfer naturally to other vision-language tasks including visual question answering, image-text retrieval, and dense captioning.
   </p>
 
   <div class="callout">
     <span class="callout-label">Resources</span>
-    📄 Paper: <strong>Xu et al., ICML 2015</strong> — Proceedings of the 32nd ICML, JMLR W&CP Vol. 37
+    📄 Paper: <strong>Xu et al., ICML 2015</strong> — Proceedings of the 32nd International Conference on Machine Learning, JMLR: W&amp;CP Volume 37
     <br/>
     💻 Code: <a href="https://github.com/kelvinxu/arctic-captions" target="_blank">github.com/kelvinxu/arctic-captions</a>
+    <br/>
+    📊 Datasets: Flickr8k · Flickr30k · MS COCO
   </div>
 
 </article>
@@ -801,7 +797,7 @@ and:    e_{ti} = f_att(a_i, h_{t-1})
 
 <footer>
   <div class="container">
-    <p>Written for ML for Remote Sensing — II &nbsp;·&nbsp; Spring 2025 (2025-2) &nbsp;·&nbsp; IIT Bombay</p>
+    <p>Written for ML for Remote Sensing — II &nbsp;·&nbsp; Spring 2025-2 &nbsp;·&nbsp; IIT Bombay</p>
     <p style="margin-top:0.5rem;">
       Paper: <em>Show, Attend and Tell: Neural Image Caption Generation with Visual Attention</em>
       <br/>Xu, Ba, Kiros, Cho, Courville, Salakhutdinov, Zemel, Bengio &nbsp;·&nbsp; ICML 2015
@@ -810,7 +806,6 @@ and:    e_{ti} = f_att(a_i, h_{t-1})
 </footer>
 
 <script>
-  // Reading progress bar
   window.addEventListener('scroll', () => {
     const doc = document.documentElement;
     const scrollTop = doc.scrollTop || document.body.scrollTop;
