@@ -25,7 +25,7 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Source Serif 4', Georgia, serif;
+      font-family: 'Sce Serif 4', Georgia, serif;
       font-weight: 300;
       font-size: 18px;
       line-height: 1.8;
@@ -445,14 +445,14 @@
 
 <header>
   <div class="container">
-    <span class="site-name">ML Paper Blog · CVPR 2024</span>
+    <span class="site-name">ML Paper Blog · CVPR 2025</span>
   </div>
 </header>
 
 <div class="container">
   <div class="hero">
     <div class="meta-row">
-      <span class="tag">CVPR 2024</span>
+      <span class="tag">CVPR 2025</span>
       <span class="tag grey">Concept Erasure</span>
       <span class="tag grey">Diffusion Models</span>
       <span class="tag grey">Training-Free</span>
@@ -482,7 +482,7 @@
       Imagine asking an AI image generator to produce a photo of two celebrities at an event. Now imagine you need to "erase" one of them — because their likeness is copyrighted, or they simply don't consent to being generated. What do you do? Most existing methods will happily erase the target… and accidentally mangle the other person in the process.
     </p>
     <p>
-      This is precisely the problem that <strong>GLoCE (Gated Low-Rank Adaptation for Concept Erasure)</strong> (Lee et al., CVPR 2024) sets out to fix. The paper introduces a surprisingly elegant, training-free approach to what they formally call <em>localized concept erasure</em> — the ability to surgically remove a specific concept from only the region of the image where it appears, leaving the rest untouched.
+      This is precisely the problem that <strong>GLoCE (Gated Low-Rank Adaptation for Concept Erasure)</strong> (Lee et al., CVPR 2025) sets out to fix. The paper introduces a surprisingly elegant, training-free approach to what they formally call <em>localized concept erasure</em> — the ability to surgically remove a specific concept from only the region of the image where it appears, leaving the rest untouched.
     </p>
 
     <!-- PROBLEM -->
@@ -604,7 +604,7 @@ s(X) = σ( α* · ( ‖(V*)ᵀ(X − β*)‖² − γ* ) )
         <tr><td>FMN</td><td>64.33</td><td>45.33</td><td>39.92</td></tr>
         <tr><td>UCE</td><td>0.00</td><td>20.67</td><td>34.25</td></tr>
         <tr><td>MACE</td><td>9.50</td><td>81.83</td><td>85.95</td></tr>
-        <tr class="highlight-row"><td>GLoCE (Ours)</td><td>1.17</td><td>95.17</td><td>96.97</td></tr>
+        <tr class="highlight-row"><td>GLoCE </td><td>1.17</td><td>95.17</td><td>96.97</td></tr>
       </tbody>
     </table>
 
@@ -666,7 +666,7 @@ s(X) = σ( α* · ( ‖(V*)ᵀ(X − β*)‖² − γ* ) )
 
     <div class="callout">
       <strong>Resources</strong>
-      📄 Paper: CVPR 2024 Open Access (CVF) &nbsp;·&nbsp;
+      📄 Paper: CVPR 2025 Open Access (CVF) &nbsp;·&nbsp;
       💻 Code: <a href="https://github.com/Hyun1A/GLoCE" target="_blank">github.com/Hyun1A/GLoCE</a>
     </div>
 
@@ -676,7 +676,7 @@ s(X) = σ( α* · ( ‖(V*)ᵀ(X − β*)‖² − γ* ) )
 <footer>
   <div class="container">
     <p>Written for ML for Remote Sensing — II · Spring 2025 (2025-2) · Seoul National University</p>
-    <p style="margin-top:0.5rem;">Paper: <em>Localized Concept Erasure for Text-to-Image Diffusion Models Using Training-Free Gated Low-Rank Adaptation</em> · Lee et al., CVPR 2024</p>
+    <p style="margin-top:0.5rem;">Paper: <em>Localized Concept Erasure for Text-to-Image Diffusion Models Using Training-Free Gated Low-Rank Adaptation</em> · Lee et al., CVPR 2025</p>
   </div>
 </footer>
 
