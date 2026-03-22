@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Surgical Forgetting: GLoCE and Localized Concept Erasure</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <title>Show, Attend and Tell — Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #0f0e0c;
-      --surface: #1a1814;
-      --border: #2e2b26;
-      --accent: #e8a44a;
-      --accent-dim: #c4883a;
-      --text: #e2ddd6;
-      --text-muted: #8a8278;
-      --text-faint: #4a4640;
-      --tag-bg: #241f18;
-      --code-bg: #141210;
-      --highlight: #2a2318;
+      --bg: #f7f4ee;
+      --surface: #ffffff;
+      --border: #e2ddd4;
+      --accent: #c0392b;
+      --accent-dim: #e74c3c;
+      --accent-light: #fdf0ef;
+      --text: #1a1714;
+      --text-muted: #6b6560;
+      --text-faint: #b0aa9f;
+      --ink: #2c2825;
+      --tag-bg: #f0ebe3;
+      --code-bg: #f2ede5;
+      --highlight: #fff8f7;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,85 +27,99 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Sce Serif 4', Georgia, serif;
+      font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 18px;
-      line-height: 1.8;
-      min-height: 100vh;
+      line-height: 1.85;
     }
 
-    /* Grain overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 100;
-      opacity: 0.4;
-    }
-
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 2rem 0;
+    /* Top bar */
+    .topbar {
+      background: var(--ink);
+      color: #c9b99a;
       text-align: center;
-      background: linear-gradient(180deg, #16130e 0%, var(--bg) 100%);
-    }
-
-    .site-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+      padding: 0.6rem 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
       letter-spacing: 0.2em;
-      color: var(--text-muted);
       text-transform: uppercase;
     }
 
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 0;
+    }
+
     .container {
-      max-width: 740px;
+      max-width: 760px;
       margin: 0 auto;
       padding: 0 2rem;
     }
 
-    /* Hero */
-    .hero {
-      padding: 5rem 0 3rem;
-      position: relative;
-    }
-
-    .meta-row {
+    .header-inner {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: var(--ink);
+    }
+
+    .header-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--text-faint);
+      text-transform: uppercase;
+    }
+
+    /* Hero */
+    .hero {
+      background: var(--surface);
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.6s ease both;
+    }
+
+    .tag-row {
+      display: flex;
       flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
     }
 
     .tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      background: var(--tag-bg);
-      color: var(--accent);
-      border: 1px solid var(--accent-dim);
-      padding: 0.25rem 0.75rem;
+      padding: 0.3rem 0.8rem;
       border-radius: 2px;
     }
 
+    .tag.red {
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid #f5c6c3;
+    }
+
     .tag.grey {
+      background: var(--tag-bg);
       color: var(--text-muted);
-      border-color: var(--border);
-      background: transparent;
+      border: 1px solid var(--border);
     }
 
     .hero h1 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-weight: 700;
-      font-size: clamp(2rem, 5vw, 3rem);
-      line-height: 1.2;
-      color: #f0ebe2;
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.01em;
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
     }
 
     .hero h1 em {
@@ -111,120 +127,128 @@
       color: var(--accent);
     }
 
-    .subtitle {
-      font-size: 1.1rem;
+    .hero-sub {
+      font-size: 1.05rem;
       color: var(--text-muted);
-      line-height: 1.6;
       max-width: 600px;
       margin-bottom: 2rem;
+      line-height: 1.65;
     }
 
     .byline {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 1rem;
       padding-top: 1.5rem;
       border-top: 1px solid var(--border);
     }
 
-    .byline-avatar {
-      width: 38px;
-      height: 38px;
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--ink);
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-dim), #6b4f2a);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--bg);
-      font-weight: 600;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: #c9b99a;
       flex-shrink: 0;
     }
 
-    .byline-text {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .byline-text strong {
-      color: var(--text);
+    .byline-info strong {
       display: block;
       font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink);
     }
 
-    /* Divider */
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 3rem 0;
+    .byline-info span {
+      font-size: 0.8rem;
+      color: var(--text-faint);
     }
 
-    /* Article body */
+    /* Reading progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--accent);
+      width: 0%;
+      z-index: 999;
+      transition: width 0.1s linear;
+    }
+
+    /* Article */
     article {
-      padding-bottom: 6rem;
+      padding: 3.5rem 0 5rem;
+      animation: fadeIn 0.6s 0.1s ease both;
     }
 
     article h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-weight: 700;
-      font-size: 1.6rem;
-      color: #f0ebe2;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.7rem;
+      color: var(--ink);
       margin: 3rem 0 1rem;
-      line-height: 1.3;
-    }
-
-    article h2::before {
-      content: '// ';
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      color: var(--accent);
-      font-weight: 400;
+      line-height: 1.25;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+      display: inline-block;
     }
 
     article h3 {
-      font-family: 'Source Serif 4', serif;
-      font-weight: 600;
-      font-size: 1.1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 1rem;
       color: var(--accent);
-      margin: 2rem 0 0.75rem;
-      letter-spacing: 0.02em;
+      margin: 2rem 0 0.6rem;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
     }
 
     article p {
       margin-bottom: 1.4rem;
-      color: var(--text);
+      color: var(--ink);
     }
 
     article a {
       color: var(--accent);
       text-decoration: underline;
       text-underline-offset: 3px;
-      text-decoration-color: var(--accent-dim);
     }
 
-    /* Callout box */
+    hr.divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    /* Callout */
     .callout {
-      background: var(--highlight);
+      background: var(--accent-light);
       border-left: 3px solid var(--accent);
-      border-radius: 0 6px 6px 0;
       padding: 1.25rem 1.5rem;
+      border-radius: 0 4px 4px 0;
       margin: 2rem 0;
       font-size: 0.95rem;
     }
 
-    .callout strong {
-      display: block;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+    .callout-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--accent);
       margin-bottom: 0.5rem;
+      display: block;
     }
 
-    /* Key insight box */
-    .insight {
+    /* Info box */
+    .infobox {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -232,13 +256,71 @@
       margin: 2rem 0;
     }
 
-    .insight-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
+    .infobox-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--text-faint);
       margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    /* Steps */
+    .steps {
+      list-style: none;
+      margin: 1.5rem 0;
+      counter-reset: step;
+    }
+
+    .steps li {
+      counter-increment: step;
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--ink);
+      color: #c9b99a;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      margin-top: 0.1rem;
+    }
+
+    .steps li strong {
+      display: block;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+
+    .steps li span {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    /* Formula box */
+    .formula {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.1rem 1.4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--ink);
+      margin: 1.25rem 0;
+      overflow-x: auto;
+      line-height: 1.8;
     }
 
     /* Stats row */
@@ -258,7 +340,7 @@
     }
 
     .stat-number {
-      font-family: 'Playfair Display', serif;
+      font-family: 'DM Serif Display', serif;
       font-size: 2rem;
       color: var(--accent);
       line-height: 1;
@@ -266,95 +348,52 @@
     }
 
     .stat-label {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
-      line-height: 1.3;
+      line-height: 1.4;
     }
 
-    /* Method steps */
-    .steps {
-      counter-reset: step;
-      list-style: none;
-      margin: 1.5rem 0;
-    }
-
-    .steps li {
-      counter-increment: step;
-      display: flex;
-      gap: 1.25rem;
-      margin-bottom: 1.5rem;
-      align-items: flex-start;
-    }
-
-    .steps li::before {
-      content: counter(step);
-      flex-shrink: 0;
-      width: 2rem;
-      height: 2rem;
-      background: var(--highlight);
-      border: 1px solid var(--accent-dim);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--accent);
-      margin-top: 0.15rem;
-    }
-
-    .steps li div strong {
-      display: block;
-      color: #f0ebe2;
-      margin-bottom: 0.2rem;
-      font-size: 0.95rem;
-    }
-
-    .steps li div span {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* Comparison table */
-    .comparison {
+    /* Results table */
+    .results-table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 0.86rem;
       margin: 1.5rem 0;
-      font-size: 0.88rem;
     }
 
-    .comparison thead th {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
+    .results-table thead th {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--text-muted);
       text-align: left;
-      padding: 0.75rem 1rem;
+      padding: 0.7rem 0.9rem;
+      border-bottom: 2px solid var(--border);
+      background: var(--tag-bg);
+    }
+
+    .results-table tbody td {
+      padding: 0.65rem 0.9rem;
       border-bottom: 1px solid var(--border);
+      color: var(--ink);
     }
 
-    .comparison tbody td {
-      padding: 0.7rem 1rem;
-      border-bottom: 1px solid var(--text-faint);
-      color: var(--text);
-    }
-
-    .comparison tbody tr:last-child td {
+    .results-table tbody tr:last-child td {
       border-bottom: none;
     }
 
-    .comparison tbody tr.highlight-row td {
-      background: var(--highlight);
+    .results-table tbody tr.winner td {
+      background: var(--accent-light);
       color: var(--accent);
-      font-weight: 600;
+      font-weight: 500;
     }
 
-    .comparison tbody tr:hover td {
-      background: var(--surface);
+    .results-table tbody tr:hover:not(.winner) td {
+      background: var(--tag-bg);
     }
 
-    /* Pro/Con lists */
+    /* Pro / Con */
     .pro-con {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -370,15 +409,15 @@
     }
 
     .pro-con-box h4 {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       margin-bottom: 0.75rem;
     }
 
-    .pro-con-box.pros h4 { color: #6dba7a; }
-    .pro-con-box.cons h4 { color: #d9706a; }
+    .pro-con-box.pros h4 { color: #27ae60; }
+    .pro-con-box.cons h4 { color: #c0392b; }
 
     .pro-con-box ul {
       list-style: none;
@@ -388,298 +427,398 @@
 
     .pro-con-box ul li {
       margin-bottom: 0.5rem;
-      padding-left: 1.2rem;
+      padding-left: 1.4rem;
       position: relative;
+      line-height: 1.45;
     }
 
-    .pro-con-box.pros ul li::before { content: '+'; position: absolute; left: 0; color: #6dba7a; font-weight: 700; }
-    .pro-con-box.cons ul li::before { content: '−'; position: absolute; left: 0; color: #d9706a; font-weight: 700; }
+    .pro-con-box.pros li::before { content: '+'; position: absolute; left: 0; color: #27ae60; font-weight: 700; }
+    .pro-con-box.cons li::before { content: '−'; position: absolute; left: 0; color: #c0392b; font-weight: 700; }
 
-    /* Code / formula */
-    .formula {
-      background: var(--code-bg);
+    /* Attention diagram (pure CSS) */
+    .attention-demo {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1rem 1.25rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      color: #c9b89a;
-      margin: 1rem 0;
-      overflow-x: auto;
-      line-height: 1.6;
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .attention-demo-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pipe-box {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-size: 0.78rem;
+      font-family: 'DM Mono', monospace;
+      color: var(--ink);
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .pipe-box.highlight {
+      background: var(--accent-light);
+      border-color: #f5c6c3;
+      color: var(--accent);
+    }
+
+    .pipe-arrow {
+      color: var(--text-faint);
+      font-size: 1.1rem;
+      flex-shrink: 0;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 0;
+      background: var(--ink);
+      color: #8a7d6e;
+      padding: 2.5rem 0;
       text-align: center;
-      font-size: 0.85rem;
-      color: var(--text-faint);
+      font-size: 0.82rem;
+      line-height: 1.8;
     }
 
-    footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
+    footer a { color: #c9b99a; text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
-    /* Animations */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-
-    .hero { animation: fadeUp 0.7s ease both; }
-    article { animation: fadeUp 0.7s 0.15s ease both; }
 
     @media (max-width: 600px) {
       .stats-row { grid-template-columns: 1fr 1fr; }
       .pro-con { grid-template-columns: 1fr; }
+      .header-meta { display: none; }
       body { font-size: 16px; }
+      .pipeline { flex-direction: column; }
+      .pipe-arrow { transform: rotate(90deg); }
     }
   </style>
 </head>
 <body>
 
+<div class="progress-bar" id="progress"></div>
+
+<div class="topbar">ML for Remote Sensing &nbsp;·&nbsp; Spring 2025-2 &nbsp;·&nbsp; Blog Assignment</div>
+
 <header>
   <div class="container">
-    <span class="site-name">ML Paper Blog · CVPR 2025</span>
+    <div class="header-inner">
+      <span class="logo">Paper Review</span>
+      <span class="header-meta">ICML 2015 &nbsp;·&nbsp; Image Captioning</span>
+    </div>
   </div>
 </header>
 
-<div class="container">
-  <div class="hero">
-    <div class="meta-row">
-      <span class="tag">CVPR 2025</span>
-      <span class="tag grey">Concept Erasure</span>
-      <span class="tag grey">Diffusion Models</span>
-      <span class="tag grey">Training-Free</span>
+<div class="hero">
+  <div class="container">
+    <div class="tag-row">
+      <span class="tag red">ICML 2015</span>
+      <span class="tag grey">Visual Attention</span>
+      <span class="tag grey">Image Captioning</span>
+      <span class="tag grey">LSTM</span>
+      <span class="tag grey">CNN + RNN</span>
     </div>
 
-    <h1>Surgical Forgetting: How <em>GLoCE</em> Teaches AI to Erase Concepts Without Collateral Damage</h1>
+    <h1>Teaching Machines to <em>Look</em> Before They Speak</h1>
 
-    <p class="subtitle">
-      A deep dive into Localized Concept Erasure for Text-to-Image Diffusion Models — erasing only what needs to go, leaving everything else intact.
+    <p class="hero-sub">
+      A deep dive into <strong>Show, Attend and Tell</strong> (Xu et al., ICML 2015) — the landmark paper that gave neural image captioning models the ability to focus on what matters, one word at a time.
     </p>
 
     <div class="byline">
-      <div class="byline-avatar">ML</div>
-      <div class="byline-text">
+      <div class="avatar">ML</div>
+      <div class="byline-info">
         <strong>Machine Learning for Remote Sensing — II</strong>
-        Spring 2025 · Blog Assignment
+        <span>Spring 2025 · Group Blog Assignment · IITB</span>
       </div>
     </div>
   </div>
-
-  <hr class="divider"/>
-
-  <article>
-
-    <!-- INTRO -->
-    <p>
-      Imagine asking an AI image generator to produce a photo of two celebrities at an event. Now imagine you need to "erase" one of them — because their likeness is copyrighted, or they simply don't consent to being generated. What do you do? Most existing methods will happily erase the target… and accidentally mangle the other person in the process.
-    </p>
-    <p>
-      This is precisely the problem that <strong>GLoCE (Gated Low-Rank Adaptation for Concept Erasure)</strong> (Lee et al., CVPR 2025) sets out to fix. The paper introduces a surprisingly elegant, training-free approach to what they formally call <em>localized concept erasure</em> — the ability to surgically remove a specific concept from only the region of the image where it appears, leaving the rest untouched.
-    </p>
-
-    <!-- PROBLEM -->
-    <h2>The Problem</h2>
-
-    <p>
-      Large-scale Text-to-Image (T2I) diffusion models like Stable Diffusion are remarkably powerful, but that power comes with serious risks. These models can generate NSFW content, reproduce copyrighted artistic styles, or create realistic likenesses of real people — all from a simple text prompt.
-    </p>
-
-    <div class="callout">
-      <strong>The Core Challenge</strong>
-      Prior concept erasure methods suffer from a critical flaw: when a target concept (e.g., a celebrity's face) appears alongside a remaining concept (another celebrity), erasing the target degrades the fidelity of the entire image — not just the target region.
-    </div>
-
-    <h3>Why Does This Matter?</h3>
-    <p>
-      This problem is highly relevant to real-world deployment of generative AI systems. Ensuring safe and controllable image generation is critical for preventing misuse such as deepfakes, copyright violations, and harmful content generation. Localized concept erasure enables fine-grained control, making diffusion models safer while preserving their usability — a balance that prior methods consistently failed to strike.
-    </p>
-
-    <p>
-      Previous solutions fall into a few broad camps: dataset censoring (expensive, slow, still leaky), post-generation filtering (easily bypassed), and fine-tuning-based erasure. The last category is the most promising, but existing fine-tuning methods — ESD, UCE, MACE, and others — all share a fundamental weakness: they operate globally on all image embeddings rather than locally on just the target region.
-    </p>
-
-    <p>
-      The result? When you erase "Elon Musk" from a prompt like <em>"A portrait of Elon Musk and Amanda Seyfried"</em>, baselines typically destroy or distort Amanda Seyfried's face too. The paper formalizes this gap with a new evaluation criterion: <strong>localized concept erasure</strong>.
-    </p>
-
-    <!-- APPROACH -->
-    <h2>The Approach: GLoCE</h2>
-
-    <p>
-      GLoCE is a <strong>training-free</strong> method that injects a lightweight module into the diffusion model at inference time. It consists of two core components working together: a <em>closed-form low-rank adapter</em> and a <em>gate mechanism</em>.
-    </p>
-
-    <ol class="steps">
-      <li>
-        <div>
-          <strong>Extract Principal Components</strong>
-          <span>Generate a small number of sample images (typically 20–30 per concept) for the target concept (e.g., "Bob Dylan") and its mapping concept (e.g., "a musician"). Run PCA on the token embeddings from each layer to find the low-dimensional subspaces that characterize each concept.</span>
-        </div>
-      </li>
-      <li>
-        <div>
-          <strong>Closed-Form Low-Rank Projection (P*, b*)</strong>
-          <span>Construct a linear projection that removes the principal directions of the target concept from its embeddings and maps them instead into the subspace of the mapping concept. This is derived analytically — no gradient descent needed — inspired by the LEACE unlearning framework.</span>
-        </div>
-      </li>
-      <li>
-        <div>
-          <strong>Gate Mechanism s(X)</strong>
-          <span>Build a sigmoid gate using the low-rank basis of the target concept. The gate activates (opens) only for image tokens that actually contain the target concept, and stays closed for everything else — preserving remaining concepts automatically.</span>
-        </div>
-      </li>
-      <li>
-        <div>
-          <strong>Inference-Only Update</strong>
-          <span>All gate parameters (α, β, γ, V) are determined from just a few image generations — no training loop, no backpropagation. </span>
-        </div>
-      </li>
-    </ol>
-
-    <div class="insight">
-      <div class="insight-label">Key Idea — Why Low-Rank Works</div>
-      <p style="margin:0; font-size:0.92rem; color: var(--text-muted);">
-        The authors observe that embedding covariances for real concepts are approximately low-rank — only a small number of singular values are significant. This means a concept's "identity" in embedding space lives in a tiny subspace, which GLoCE can precisely target and remove without disturbing the rest.
-      </p>
-    </div>
-
-    <p>
-      The final function applied to each layer's output is elegantly simple:
-    </p>
-
-    <div class="formula">
-f(X) = (1 − s(X)) · X  +  s(X) · (P* X + b*)
-<br><br>
-s(X) = σ( α* · ( ‖(V*)ᵀ(X − β*)‖² − γ* ) )
-    </div>
-
-    <p>
-      When <code>s(X) ≈ 0</code> (non-target token), the embedding passes through unchanged. When <code>s(X) ≈ 1</code> (target token), the projection P* and bias b* redirect it away from the target concept's subspace. The gate is the key innovation — prior methods effectively hardcode s(X) = 1 for all tokens, which is why they cause collateral damage.
-    </p>
-
-    <!-- RESULTS -->
-    <h2>Results</h2>
-
-    <p>
-      The experimental results demonstrate significant improvements across all evaluation metrics.
-    </p>
-
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-number">95%+</div>
-        <div class="stat-label">Remaining concept accuracy (vs ~60–80% for best baseline)</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-number">8</div>
-        <div class="stat-label">Nudity detections on I2P (vs 89–424 for baselines)</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-number">0%</div>
-        <div class="stat-label">Attack success rate vs Ring-A-Bell adversarial tool</div>
-      </div>
-    </div>
-
-    <p>
-      On the core localized celebrity erasure benchmark (50 celebrities erased), GLoCE achieves a harmonic mean score (H<sub>cc</sub>) of <strong>96.97</strong> — compared to MACE's 85.95 and UCE's 34.25. The gap is especially stark for specificity (Acc<sub>r</sub>): GLoCE maintains ~95% detection accuracy for remaining celebrities, while most baselines drop below 50%.
-    </p>
-
-    <table class="comparison">
-      <thead>
-        <tr>
-          <th>Method</th>
-          <th>Acc<sub>t</sub> ↓ (erase)</th>
-          <th>Acc<sub>r</sub> ↑ (preserve)</th>
-          <th>H<sub>cc</sub> ↑</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>FMN</td><td>64.33</td><td>45.33</td><td>39.92</td></tr>
-        <tr><td>UCE</td><td>0.00</td><td>20.67</td><td>34.25</td></tr>
-        <tr><td>MACE</td><td>9.50</td><td>81.83</td><td>85.95</td></tr>
-        <tr class="highlight-row"><td>GLoCE </td><td>1.17</td><td>95.17</td><td>96.97</td></tr>
-      </tbody>
-    </table>
-
-    <p>
-      On explicit content erasure (I2P benchmark), GLoCE reduces detected nudity to just 8 instances — a dramatic improvement over the next-best method (RECE at 89). It simultaneously achieves the highest CLIP score on COCO-30K, confirming that erasing harmful content doesn't hurt general generation quality.
-    </p>
-
-    <!-- CRITICAL ANALYSIS -->
-    <h2>Critical Analysis</h2>
-
-    <div class="pro-con">
-      <div class="pro-con-box pros">
-        <h4>Strengths</h4>
-        <ul>
-          <li>Genuinely novel framing of localized erasure</li>
-          <li>Training-free — fast and practical to deploy</li>
-          <li>Strong results across all three axes: efficacy, specificity, robustness</li>
-          <li>Generalizes to SD v3 (DiT architecture) with minimal changes</li>
-          <li>Scales to mass concept erasure (50 celebrities, 100 artistic styles)</li>
-        </ul>
-      </div>
-      <div class="pro-con-box cons">
-        <h4>Limitations</h4>
-        <ul>
-          <li>Still requires generating ~32 images per concept to build subspaces</li>
-          <li>Anchor concept selection relies on a predefined pool — may fail for niche concepts</li>
-          <li>Primarily tested on celebrities and nudity — broader real-world validation needed</li>
-          <li>Fixed rank parameters (r₁, r₂, r₃) need manual tuning per task</li>
-          <li>No perceptual user study to validate qualitative improvements</li>
-        </ul>
-      </div>
-    </div>
-
-    <h3>Improvement Suggestions</h3>
-
-    <p>
-      <strong>Adaptive rank selection.</strong> The paper fixes (r₁, r₂, r₃) manually for each task. An automatic rank selection criterion — e.g., based on explained variance threshold — would make GLoCE more plug-and-play across diverse concept types without hyperparameter hunting.
-    </p>
-    <p>
-      <strong>Dynamic anchor concept retrieval.</strong> Currently, anchor concepts are chosen from a predefined pool using text embedding cosine similarity. For underrepresented or domain-specific concepts (medical imagery, remote sensing targets), this pool may be inadequate. A retrieval-augmented approach that dynamically builds the anchor pool from the internet or a large embedding database would be more robust.
-    </p>
-    <p>
-      <strong>Extension to video diffusion.</strong> The method operates on per-frame image embeddings. Extending the gate mechanism to handle temporal consistency across frames in video diffusion models (e.g., Stable Video Diffusion) would be a natural and high-impact next step.
-    </p>
-    <p>
-      <strong>Fairness evaluation.</strong> The celebrity benchmark heavily samples from the GCD dataset, which may not reflect demographic diversity. Evaluating erasure quality across different demographic groups would strengthen trust in real-world deployment.
-    </p>
-
-    <!-- CONCLUSION -->
-    <h2>Conclusion</h2>
-
-    <p>
-      GLoCE is a well-executed solution to a genuinely important problem. By framing concept erasure as a <em>localized</em> task and solving it with a training-free, low-rank approach, the authors advance the state of the art by a surprisingly large margin. The gate mechanism is the paper's key insight — simple in formulation, powerful in effect.
-    </p>
-
-    <p>
-      For anyone working on safe generative AI, content moderation, or machine unlearning, this paper is essential reading. The authors also provide a public GitHub repository, enabling full reproducibility and practical implementation out of the box.
-    </p>
-
-    <div class="callout">
-  <strong>Resources</strong>
-  📄 Paper: <a href="https://openaccess.thecvf.com/content/CVPR2025/papers/Lee_Localized_Concept_Erasure_for_Text-to-Image_Diffusion_Models_Using_Training-Free_Gated_CVPR_2025_paper.pdf" target="_blank">CVPR 2025 Open Access (CVF)</a>
-  &nbsp;·&nbsp;
-  💻 Code: <a href="https://github.com/Hyun1A/GLoCE" target="_blank">github.com/Hyun1A/GLoCE</a>
 </div>
 
-  </article>
+<div class="container">
+<article>
+
+  <!-- INTRO -->
+  <p>
+    When you look at a photo and describe it, your eyes don't scan the entire image at once. You glance at a face, a dog, a sign — your attention shifts naturally as you form each word. This is so intuitive for humans that we rarely think about it. But for a machine trying to describe an image? It's a deceptively hard problem.
+  </p>
+  <p>
+    In 2015, Xu et al. published <strong>Show, Attend and Tell</strong> at ICML — a paper that didn't just improve image captioning scores, but fundamentally changed <em>how</em> we think about the task. By introducing a visual attention mechanism into the encoder-decoder framework, they enabled a model to dynamically focus on relevant regions of an image as it generates each word of a caption.
+  </p>
+
+  <!-- PROBLEM -->
+  <h2>The Problem</h2>
+
+  <p>
+    Image captioning sits at the intersection of computer vision and natural language processing. A model must understand <em>what</em> is in an image — objects, their attributes, spatial relationships — and then express that understanding in fluent natural language. Prior to this work, the dominant approach used a CNN to encode an image into a single fixed-length vector, which was then fed into an LSTM to decode a sentence word by word.
+  </p>
+
+  <div class="callout">
+    <span class="callout-label">Core Limitation</span>
+    Compressing an entire image into a single vector creates an information bottleneck. The decoder must generate a full sentence from one static representation — with no way to dynamically "look back" at different parts of the image as it generates each word.
+  </div>
+
+  <p>
+    This is particularly problematic for complex scenes. If a caption needs to describe both a frisbee and the person throwing it, a single global vector may capture the gist of the scene but fail to preserve fine-grained spatial detail needed for accurate word-by-word generation.
+  </p>
+
+  <h3>Why This Matters</h3>
+
+  <p>
+    Automatic image captioning has significant real-world relevance — from accessibility tools for the visually impaired, to automatic metadata generation for image databases, to scene understanding in robotics and remote sensing. In the context of remote sensing specifically, where images are densely packed with spatially distinct objects (buildings, roads, vegetation, water bodies), the ability to locally attend to different regions is especially valuable. A model that can attend to "the river in the lower-left region" separately from "the forested area on the right" is far more useful than one working from a blurry global average.
+  </p>
+
+  <!-- APPROACH -->
+  <h2>The Approach</h2>
+
+  <p>
+    The paper (Xu et al., ICML 2015) proposes replacing the single-vector image encoding with a set of spatial feature vectors, and introducing an attention mechanism that weights these vectors differently at each decoding step.
+  </p>
+
+  <div class="attention-demo">
+    <span class="attention-demo-label">Model Pipeline</span>
+    <div class="pipeline">
+      <div class="pipe-box">Input Image</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">CNN Encoder<br/><small>14×14 feature map</small></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box highlight">Attention<br/><small>α weights per region</small></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">LSTM Decoder</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">Caption<br/><small>word by word</small></div>
+    </div>
+  </div>
+
+  <ol class="steps">
+    <li>
+      <strong>CNN Encoder — Spatial Features</strong>
+      <span>Instead of using the final fully-connected layer of a CNN, the model extracts features from a lower convolutional layer (specifically the 14×14×512 feature map from Oxford VGGNet). This produces L = 196 annotation vectors, each representing a spatial region of the image rather than a single global descriptor.</span>
+    </li>
+    <li>
+      <strong>Attention Mechanism — Where to Look</strong>
+      <span>At each decoding timestep t, a small MLP (the attention model f_att) takes the previous LSTM hidden state h_{t-1} and each annotation vector a_i to produce energy scores e_{ti}. These are normalized via softmax into attention weights α_{ti} — a probability distribution over all 196 locations indicating which regions are most relevant for generating the next word.</span>
+    </li>
+    <li>
+      <strong>Context Vector — What the Model Sees</strong>
+      <span>The attention weights are used to compute a context vector ẑ_t — a weighted combination of the annotation vectors. This dynamic, location-aware context vector is then fed into the LSTM alongside the previous word embedding to generate the next word.</span>
+    </li>
+    <li>
+      <strong>LSTM Decoder — Word by Word</strong>
+      <span>A standard LSTM generates one word per timestep, conditioned on the context vector ẑ_t, the previous hidden state h_{t-1}, and the embedding of the previously generated word. The initial LSTM state is computed from the mean of all annotation vectors through learned MLPs.</span>
+    </li>
+  </ol>
+
+  <h3>Soft vs Hard Attention</h3>
+
+  <p>
+    The paper proposes two variants of the attention mechanism, which is one of its most intellectually interesting contributions:
+  </p>
+
+  <div class="infobox">
+    <span class="infobox-label">Soft Attention (Deterministic)</span>
+    <p style="margin:0; font-size:0.92rem; color:var(--text-muted);">
+      Takes the expectation of the context vector — a weighted average over all regions. Fully differentiable, trained end-to-end with standard backpropagation. Also introduces <em>doubly stochastic regularization</em>: a penalty that encourages the model to attend to every part of the image at least once across the full caption, improving coverage and detail.
+    </p>
+  </div>
+
+  <div class="infobox">
+    <span class="infobox-label">Hard Attention (Stochastic)</span>
+    <p style="margin:0; font-size:0.92rem; color:var(--text-muted);">
+      Samples a single attention location at each timestep from a multinoulli distribution over the attention weights. Not differentiable — trained using the REINFORCE algorithm (Williams, 1992), a policy gradient method from reinforcement learning. Harder to train but achieves slightly better quantitative performance.
+    </p>
+  </div>
+
+  <p>
+    The soft attention context vector is computed as:
+  </p>
+
+  <div class="formula">
+ẑ_t = Σ_i  α_{ti} · a_i
+<br><br>
+where:  α_{ti} = exp(e_{ti}) / Σ_k exp(e_{tk})
+<br>
+and:    e_{ti} = f_att(a_i, h_{t-1})
+  </div>
+
+  <!-- RESULTS -->
+  <h2>Results</h2>
+
+  <p>
+    The experimental results demonstrate significant improvements across all evaluation metrics. The model is evaluated on three benchmark datasets — Flickr8k, Flickr30k, and MS COCO — using BLEU (1–4) and METEOR scores.
+  </p>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-number">25.0</div>
+      <div class="stat-label">BLEU-4 on MS COCO<br/>(Hard Attention)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">23.90</div>
+      <div class="stat-label">METEOR on MS COCO<br/>(Soft Attention, best overall)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">21.3</div>
+      <div class="stat-label">BLEU-4 on Flickr8k<br/>(Hard Attention, vs 17.7 baseline)</div>
+    </div>
+  </div>
+
+  <p>
+    On Flickr8k, Hard-Attention achieves a BLEU-4 of 21.3 compared to 17.7 for the Log Bilinear baseline — a substantial improvement. On MS COCO, Soft-Attention achieves a METEOR score of 23.90, significantly outperforming all baselines including Google NIC (20.71).
+  </p>
+
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>BLEU-1</th>
+        <th>BLEU-4</th>
+        <th>METEOR</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Google NIC (Vinyals et al.)</td>
+        <td>66.6</td>
+        <td>24.6</td>
+        <td>20.71</td>
+      </tr>
+      <tr>
+        <td>Log Bilinear (Kiros et al.)</td>
+        <td>70.8</td>
+        <td>24.3</td>
+        <td>20.03</td>
+      </tr>
+      <tr class="winner">
+        <td>Soft-Attention (Ours)</td>
+        <td>70.7</td>
+        <td>24.3</td>
+        <td>23.90 ↑</td>
+      </tr>
+      <tr class="winner">
+        <td>Hard-Attention (Ours)</td>
+        <td>71.8</td>
+        <td>25.0 ↑</td>
+        <td>23.04</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Beyond the numbers, the paper's qualitative visualizations are genuinely compelling. By upsampling the attention weights and overlaying them on the original image, one can see exactly what region the model focused on when generating each word — "bird" highlights the bird, "water" highlights the lake, "frisbee" highlights the frisbee. This level of interpretability was rare in deep learning models at the time.
+  </p>
+
+  <!-- CRITICAL ANALYSIS -->
+  <h2>Critical Analysis</h2>
+
+  <div class="pro-con">
+    <div class="pro-con-box pros">
+      <h4>Strengths</h4>
+      <ul>
+        <li>Elegant, principled extension of the encoder-decoder framework</li>
+        <li>Attention maps provide genuine model interpretability</li>
+        <li>Two theoretically distinct attention variants, well motivated</li>
+        <li>Doubly stochastic regularization is a practically effective trick</li>
+        <li>State-of-the-art on all three benchmarks at publication time</li>
+        <li>Highly influential — cited over 10,000 times, foundational to Transformers</li>
+      </ul>
+    </div>
+    <div class="pro-con-box cons">
+      <h4>Limitations</h4>
+      <ul>
+        <li>Hard attention requires REINFORCE — high variance, slow to train</li>
+        <li>Uses fixed VGGNet encoder; no end-to-end fine-tuning of encoder</li>
+        <li>Attention is over a coarse 14×14 grid — limited spatial resolution</li>
+        <li>BLEU metric is known to correlate poorly with human judgment</li>
+        <li>No cross-modal attention — text and image streams interact only through the hidden state</li>
+        <li>Sequential LSTM decoding is slow and not parallelizable</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Improvement Suggestions</h3>
+
+  <p>
+    <strong>End-to-end encoder fine-tuning.</strong> The VGGNet encoder is kept frozen during training. Fine-tuning the encoder jointly with the attention-decoder on the captioning objective would allow the visual features to be task-specific, likely improving both coverage and accuracy — a direction later explored successfully by follow-up work.
+  </p>
+
+  <p>
+    <strong>Higher-resolution attention.</strong> The 14×14 spatial grid gives 196 possible attention locations, which is relatively coarse. Using features from later, higher-resolution layers or applying attention at multiple scales (as in feature pyramid networks) would allow more precise localization, particularly for small objects.
+  </p>
+
+  <p>
+    <strong>Replacing LSTM with Transformer decoder.</strong> The sequential nature of LSTM decoding is a fundamental bottleneck. A Transformer-based decoder with self-attention and multi-head cross-attention would be both faster and more expressive — indeed, this is exactly what modern captioning models do. The attention mechanism introduced in this paper is a direct predecessor to the cross-attention mechanism in the Transformer architecture.
+  </p>
+
+  <p>
+    <strong>Better evaluation metrics.</strong> Relying on BLEU-4 and METEOR alone is insufficient — both are known to have weak correlation with human judgments of caption quality. More recent metrics like CIDEr, SPICE, or CLIPScore provide better signal and should be co-reported for fair comparison.
+  </p>
+
+  <!-- CONCLUSION -->
+  <h2>Conclusion</h2>
+
+  <p>
+    Show, Attend and Tell is one of those rare papers that is both practically impactful and intellectually illuminating. It introduced a simple but powerful idea — let the model decide where to look — and demonstrated that this yields better captions <em>and</em> more interpretable models simultaneously.
+  </p>
+  <p>
+    The paper's core contribution, soft attention over spatial feature maps, became a cornerstone of multimodal deep learning and directly influenced the design of the Transformer's cross-attention mechanism. A decade later, it remains essential reading for anyone working at the intersection of vision and language.
+  </p>
+  <p>
+    The authors provide a public GitHub repository enabling full reproducibility, making this paper also suitable for hands-on experimentation.
+  </p>
+
+  <div class="callout">
+    <span class="callout-label">Resources</span>
+    📄 Paper: <strong>Xu et al., ICML 2015</strong> — Proceedings of the 32nd ICML, JMLR W&CP Vol. 37
+    <br/>
+    💻 Code: <a href="https://github.com/kelvinxu/arctic-captions" target="_blank">github.com/kelvinxu/arctic-captions</a>
+  </div>
+
+</article>
 </div>
 
 <footer>
   <div class="container">
-    <p>Written for ML for Remote Sensing — II · Spring 2025 (2025-2) </p>
-    <p style="margin-top:0.5rem;">Paper: <em>Localized Concept Erasure for Text-to-Image Diffusion Models Using Training-Free Gated Low-Rank Adaptation</em> · Lee et al., CVPR 2025</p>
+    <p>Written for ML for Remote Sensing — II &nbsp;·&nbsp; Spring 2025 (2025-2) &nbsp;·&nbsp; IIT Bombay</p>
+    <p style="margin-top:0.5rem;">
+      Paper: <em>Show, Attend and Tell: Neural Image Caption Generation with Visual Attention</em>
+      <br/>Xu, Ba, Kiros, Cho, Courville, Salakhutdinov, Zemel, Bengio &nbsp;·&nbsp; ICML 2015
+    </p>
   </div>
 </footer>
+
+<script>
+  // Reading progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop || document.body.scrollTop;
+    const scrollHeight = doc.scrollHeight - doc.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progress').style.width = progress + '%';
+  });
+</script>
 
 </body>
 </html>
